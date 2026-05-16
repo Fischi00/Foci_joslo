@@ -18,9 +18,28 @@ class FootballPreprocessor:
         
         teams_by_league = {}
         league_map = {
-            'E0': 'Premier League', 'E1': 'Championship', 'D1': '🇩🇪 Bundesliga',
-            'I1': '🇮🇹 Serie A', 'SP1': '🇪🇸 La Liga', 'F1': '🇫🇷 Ligue 1', 'B1': '🇧🇪 Pro League',
-            'N1': '🇳🇱 Eredivisie', 'P1': '🇵🇹 Primeira Liga', 'T1': '🇹🇷 Süper Lig'
+            'E0': '🇬🇧 Premier League (Első osztály)',
+            'E1': '🇬🇧 Championship (Másodosztály)',
+            'E2': '🇬🇧 League One (Harmadosztály)',
+            'E3': '🇬🇧 League Two (Negyedosztály)',
+            'EC': '🇬🇧 National League / Conference (Ötödosztály)',
+            'SC0': '🇬🇧 Premiership (Első osztály)',
+            'SC1': '🇬🇧 Championship (Másodosztály)',
+            'SC2': '🇬🇧 League One (Harmadosztály)',
+            'SC3': '🇬🇧 League Two (Negyedosztály)',
+            'D1': '🇩🇪 Bundesliga 1 (Első osztály)',
+            'D2': '🇩🇪 Bundesliga 2 (Másodosztály)',
+            'I1': '🇮🇹 Serie A (Első osztály)',
+            'I2': '🇮🇹 Serie B (Másodosztály)',
+            'SP1': '🇪🇸 La Liga / Primera División (Első osztály)',
+            'SP2': '🇪🇸 Segunda División (Másodosztály)',
+            'F1': '🇫🇷 Ligue 1 (Első osztály)',
+            'F2': '🇫🇷 Ligue 2 (Másodosztály)',
+            'N1': '🇳🇱 Eredivisie (Első osztály)',
+            'B1': '🇧🇪 Jupiler Pro League (Első osztály)',
+            'P1': '🇵🇹 Primeira Liga (Első osztály)',
+            'T1': '🇹🇷 Süper Lig (Első osztály)',
+            'G1': '🇬🇷 Szuperliga (Első osztály)'
         }
         if 'Div' in df.columns:
             for div in df['Div'].dropna().unique():
