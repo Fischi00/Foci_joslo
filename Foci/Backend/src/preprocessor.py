@@ -75,6 +75,30 @@ class FootballPreprocessor:
             pickle.dump(team_stats, f)
         with open(os.path.join(MODEL_PATH, 'teams_by_league.pkl'), 'wb') as f:
             pickle.dump(teams_by_league, f)
+        
+        # --- ÚJ RÉSZ: Legutóbbi egymás elleni meccsek kimentése validációhoz (JAVÍTOTT, GOLYÓÁLLÓ VERZIÓ) ---
+        h2h_matches = {}
+        hg_col = 'FTHG' if 'FTHG' in df.columns else None
+        ag_col = 'FTAG' if 'FTAG' in df.columns else None
+        
+        for (h_team, a_team), group in df.groupby(['HomeTeam', 'AwayTeam']):
+            last_match = group.iloc[-1] # A legutolsó meccsük
+            
+            # Csak akkor alakítjuk int-é, ha a gól oszlop létezik ÉS nem NaN (hiányzó) az értéke
+            if hg_col and ag_col and not pd.isna(last_match[hg_col]) and not pd.isna(last_match[ag_col]):
+                score_str = f"{int(last_match[hg_col])} - {int(last_match[ag_col])}"
+            else:
+                score_str = "? - ?"
+            
+            h2h_matches[f"{h_team} vs {a_team}"] = {
+                'FTR': str(last_match['FTR']).strip().upper() if not pd.isna(last_match['FTR']) else "D",
+                'Score': score_str,
+                'Date': str(last_match['Date']) if 'Date' in group.columns else "Ismeretlen dátum"
+            }
+            
+        with open(os.path.join(MODEL_PATH, 'h2h_matches.pkl'), 'wb') as f:
+            pickle.dump(h2h_matches, f)
+
 
     def transform_data(self, df, is_training=True):
         df = df.dropna(subset=['HomeTeam', 'AwayTeam', 'FTR']).copy()
