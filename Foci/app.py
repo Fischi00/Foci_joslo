@@ -32,24 +32,24 @@ except Exception as e:
     st.error(f"Hiba a modellek betöltésekor: {e}")
     st.stop()
 
-st.title("⚽ Foci Jósló MI: Modell Párbaj")
+st.title("Foci Jósló MI: Modell Párbaj")
 st.markdown("Válaszd ki a bajnokságot, majd ellenőrizd, hogy mit jósol a mesterséges intelligencia!")
 
 leagues = list(teams_by_league.keys())
 
 # --- ÚJ UI: EGYETLEN LIGAVÁLASZTÓ KÖZÉPEN ---
-st.markdown("### 🏆 Bajnokság Kiválasztása")
+st.markdown("###  Bajnokság Kiválasztása")
 selected_league = st.selectbox("Kérlek, válassz egy ligát:", leagues, label_visibility="collapsed")
 
 st.markdown("---")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.header("🏠 Hazai Oldal")
+    st.header("Hazai Oldal")
     home_team = st.selectbox("Csapat (Hazai)", teams_by_league[selected_league], key="ht")
 
 with col2:
-    st.header("🚀 Vendég Oldal")
+    st.header("Vendég Oldal")
     # Hogy ne legyen alapból ugyanaz a két csapat, a 2. csapatot választjuk alapértelmezettnek
     away_teams = teams_by_league[selected_league]
     default_away_index = 1 if len(away_teams) > 1 else 0
@@ -57,10 +57,10 @@ with col2:
 
 # Biztonsági figyelmeztetés
 if home_team == away_team:
-    st.warning("⚠️ Kérlek, válassz két különböző csapatot a bajnokságból!")
+    st.warning("Kérlek, válassz két különböző csapatot a bajnokságból!")
 
 st.markdown("---")
-st.subheader("🤖 Modellek Kiválasztása")
+st.subheader("Modellek Kiválasztása")
 model_names = list(models.keys())
 
 col3, col4 = st.columns(2)
@@ -70,7 +70,7 @@ with col4:
     model2_name = st.selectbox("2. Modell (Kék sarok)", model_names, index=3)
 
 # Csak akkor engedjük jósolni, ha nem ugyanaz a két csapat
-if st.button("Jóslat Futtatása és Validáció 🚀", use_container_width=True, type="primary", disabled=(home_team == away_team)):
+if st.button("Jóslat Futtatása és Validáció", use_container_width=True, type="primary", disabled=(home_team == away_team)):
     with st.spinner('A mesterséges intelligencia valószínűségeket számít...'):
         h_id = team_le.transform([home_team])[0]
         a_id = team_le.transform([away_team])[0]
@@ -85,7 +85,7 @@ if st.button("Jóslat Futtatása és Validáció 🚀", use_container_width=True
         scaled_stats = scaler.transform(stats_array)[0]
         features = [[h_id, a_id, scaled_stats[0], scaled_stats[1], scaled_stats[2], scaled_stats[3], scaled_stats[4], scaled_stats[5]]]
         
-        res_map = {0: "Vendég győzelem 🔴", 1: "Döntetlen ⚪", 2: "Hazai győzelem 🟢"}
+        res_map = {0: "Vendég győzelem", 1: "Döntetlen", 2: "Hazai győzelem"}
         pred_to_ftr = {0: "A", 1: "D", 2: "H"}
         
         # --- ÚJ RÉSZ: SZÁZALÉKOS VALÓSZÍNŰSÉGEK SZÁMÍTÁSA ---
@@ -99,7 +99,7 @@ if st.button("Jóslat Futtatása és Validáció 🚀", use_container_width=True
         
         # --- MODELLEK TIPPJEINEK KIÍRÁSA ---
         st.markdown("---")
-        st.subheader("🔮 A Modellek Tippjei és Bizonyossága")
+        st.subheader("A Modellek Tippjei és Bizonyossága")
         res_col1, res_col2 = st.columns(2)
         with res_col1:
             st.error(f"**{model1_name}** jóslata:\n### {res_map[int(pred1)]}\n*(Magabiztosság: {conf1:.1f}%)*")
@@ -108,14 +108,14 @@ if st.button("Jóslat Futtatása és Validáció 🚀", use_container_width=True
             
         # --- VALÓSÁG ELLENŐRZÉSE (VALIDÁCIÓ) ---
         st.markdown("---")
-        st.subheader("📊 Valóság Ellenőrzése (Történelmi Visszatekintés)")
+        st.subheader("Valóság Ellenőrzése (Történelmi Visszatekintés)")
         
         h2h_key = f"{home_team} vs {away_team}"
         if h2h_key in h2h_matches:
             actual = h2h_matches[h2h_key]
             actual_ftr = actual['FTR']
             
-            actual_map = {"H": "Hazai győzelem 🟢", "D": "Döntetlen ⚪", "A": "Vendég győzelem 🔴"}
+            actual_map = {"H": "Hazai győzelem", "D": "Döntetlen", "A": "Vendég győzelem"}
             
             st.markdown(f"A két csapat **legutóbbi egymás elleni mérkőzése** az adatbázisban (Dátum: {actual['Date']}):")
             st.success(f"### {home_team}  {actual['Score']}  {away_team}  ➔  Végeredmény: {actual_map.get(actual_ftr, 'Ismeretlen')}")
@@ -124,13 +124,13 @@ if st.button("Jóslat Futtatása és Validáció 🚀", use_container_width=True
             val_col1, val_col2 = st.columns(2)
             with val_col1:
                 if pred_to_ftr[int(pred1)] == actual_ftr:
-                    st.success(f"🎯 **{model1_name}** Eltalálta! (Sikeres predikció)")
+                    st.success(f"**{model1_name}** Eltalálta! (Sikeres predikció)")
                 else:
-                    st.error(f"❌ **{model1_name}** Tévedett.")
+                    st.error(f"**{model1_name}** Tévedett.")
             with val_col2:
                 if pred_to_ftr[int(pred2)] == actual_ftr:
-                    st.success(f"🎯 **{model2_name}** Eltalálta! (Sikeres predikció)")
+                    st.success(f"**{model2_name}** Eltalálta! (Sikeres predikció)")
                 else:
-                    st.error(f"❌ **{model2_name}** Tévedett.")
+                    st.error(f"**{model2_name}** Tévedett.")
         else:
-            st.warning("⚠️ Erről a párosításról nincs adat a történelemben (pl. nagyon régen játszottak).")
+            st.warning("Erről a párosításról nincs adat a történelemben (pl. nagyon régen játszottak).")
